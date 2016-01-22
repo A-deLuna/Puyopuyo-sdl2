@@ -27,7 +27,7 @@ Graphics::~Graphics() {
 }
 
 void
-Graphics::color(int r, int g, int b, int a) {
+Graphics::color(char r, char g, char b, char a) {
   SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
 

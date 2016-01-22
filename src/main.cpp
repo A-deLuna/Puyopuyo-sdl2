@@ -3,7 +3,6 @@
 
 
 int main() {
-
   Game game;
 
   atexit(SDL_Quit);
