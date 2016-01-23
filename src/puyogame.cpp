@@ -5,8 +5,6 @@
 #include "puyo.hpp"
 
 PuyoGame::PuyoGame() : board(BOARD_TILES_X * BOARD_TILES_Y){
-  falling_puyo = std::make_shared<Puyo>(50, 0, Graphics::Color::GREEN);
-  falling_puyo->set_companion(std::make_shared<Puyo>(100,0, Graphics::Color::BLUE));
 }
 
 PuyoGame::~PuyoGame() {
@@ -16,6 +14,11 @@ void
 PuyoGame::update(Input& input) {
   const int FALLING_PER_FRAME = 1;
   const int FALLING_FAST = 5;
+
+  if(falling_puyo == nullptr) {
+    falling_puyo = std::make_shared<Puyo>(40, 0, Graphics::Color::GREEN);
+    falling_puyo->companion = std::make_shared<Puyo>(80, 0, Graphics::Color::BLUE);
+  }
   if (input.was_key_pressed(SDL_SCANCODE_DOWN)) {
     if(falling_puyo->can_move_to(0 , 1, BOARD_TILES_X, BOARD_TILES_Y, board)) {
       falling_puyo->fall(FALLING_FAST);
@@ -34,17 +37,39 @@ PuyoGame::update(Input& input) {
   if(falling_puyo->can_move_to(0 , 1, BOARD_TILES_X, BOARD_TILES_Y, board)) {
     falling_puyo->fall(FALLING_PER_FRAME);
   }
+  else {
+    set_falling_peice_in_board();
+  }
+}
+
+void PuyoGame::set_falling_peice_in_board() {
+  int x, y;
+  falling_puyo->get_board_XY(x, y);
+  board[y * BOARD_TILES_X + x] = falling_puyo;
+  falling_puyo->companion->get_board_XY(x, y);
+  board[y * BOARD_TILES_X + x] = falling_puyo->companion;
+  falling_puyo->companion = nullptr;
+  falling_puyo = nullptr;
 }
 
 void
 PuyoGame::draw(Graphics& graphics) {
   draw_background(graphics);
-  falling_puyo->draw(graphics);
+  if(falling_puyo) falling_puyo->draw(graphics);
+  draw_board(graphics);
   graphics.flip();
 }
+void
+PuyoGame::draw_board(Graphics& graphics) {
+  for(auto puyo: board) {
+    if(puyo) {
+      puyo->draw(graphics);
+    }
+  }
+}
 
-void 
+void
 PuyoGame::draw_background(Graphics& graphics) {
-  graphics.color(238, 238, 238, 255);
+  graphics.color(Graphics::Color::LIGHT_GREY);
   graphics.clear();
 }

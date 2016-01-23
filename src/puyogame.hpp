@@ -15,10 +15,14 @@ public:
   void update(Input& input);
   void draw(Graphics& graphics);
   void draw_background(Graphics& graphics);
+
 private:
-  std::shared_ptr<Puyo> falling_puyo;
-  std::vector<std::shared_ptr<Puyo>> board;
+  void set_falling_peice_in_board();
+  void draw_board(Graphics& graphics);
+private:
   const int BOARD_TILES_X = 6;
   const int BOARD_TILES_Y = 14;
+  std::shared_ptr<Puyo> falling_puyo;
+  std::vector<std::shared_ptr<Puyo>> board;
 };
 #endif

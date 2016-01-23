@@ -4,12 +4,11 @@
 #include <vector>
 #include <memory>
 
-class Graphics;
+#include "graphics.hpp"
 class Puyo {
 public:
-  Puyo(int x, int y, unsigned int color);
+  Puyo(int x, int y, Graphics::Color color);
   Puyo(int x, int y, int w, int h);
-  void set_companion(std::shared_ptr<Puyo> companion);
   void draw(Graphics& graphics);
   void fall(int pixels);
   void move_left();
@@ -17,15 +16,17 @@ public:
   bool can_move_to(int dx, int dy,
                    int board_x, int board_y,
                    const std::vector<std::shared_ptr<Puyo>>& board);
+  void get_board_XY(int& out_x, int& out_y);
+  void get_board_XY(int x, int y, int& out_x, int& out_y);
+  std::shared_ptr<Puyo> companion;
 
 private:
-  std::shared_ptr<Puyo> companion;
   const int PUYO_WIDTH = 40;
   const int PUYO_HEIGHT = 40;
   int x;
   int y;
   int w;
   int h;
-  unsigned int color;
+  Graphics::Color color;
 };
 #endif
