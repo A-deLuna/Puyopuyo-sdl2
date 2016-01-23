@@ -26,6 +26,35 @@ void Puyo::move_right() {
 
 }
 
+void Puyo::rotate_right(std::vector<std::shared_ptr<Puyo>>& board) {
+
+  if(y == companion->y) {
+    // FC -> F
+    //       C
+    if(x < companion->x) {
+      companion->setXY(x, y + PUYO_HEIGHT);
+    }
+    // CF -> C
+    //       F
+    else {
+      companion->setXY(x, y - PUYO_HEIGHT);
+    }
+  }
+  else if(x == companion->x) {
+    // F -> CF
+    // C
+    if(y < companion->y) {
+      companion->setXY(x - PUYO_WIDTH, y);
+    }
+    // C -> FC
+    // F
+    else {
+      companion->setXY(x + PUYO_WIDTH, y);
+    }
+
+  }
+}
+
 void
 Puyo::get_board_XY(int& out_x, int& out_y) {
   out_x = x / PUYO_WIDTH;
@@ -38,6 +67,19 @@ Puyo::get_board_XY(int x, int y, int& out_x, int& out_y) {
   out_x = x / PUYO_WIDTH;
   // round up integer division
   out_y = (y + PUYO_HEIGHT - 1) / PUYO_HEIGHT;
+}
+
+void
+Puyo::setXY(int x, int y) {
+  this->x = x;
+  this->y = y;
+}
+
+void
+Puyo::setXY_from_board(int x, int y) {
+  x *= PUYO_WIDTH;
+  y *= PUYO_HEIGHT;
+  setXY(x, y);
 }
 
 bool

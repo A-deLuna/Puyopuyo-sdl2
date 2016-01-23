@@ -10,6 +10,8 @@ public:
     RED = 0xFF0000FF,
     GREEN = 0x00FF00FF,
     BLUE = 0x0000FFFF,
+    YELLOW = 0xFFFF00FF,
+    PURPLE = 0x663399FF,
     LIGHT_GREY = 0xEEEEEEFF
   };
   Graphics();

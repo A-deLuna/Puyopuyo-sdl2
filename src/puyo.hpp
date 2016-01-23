@@ -18,6 +18,9 @@ public:
                    const std::vector<std::shared_ptr<Puyo>>& board);
   void get_board_XY(int& out_x, int& out_y);
   void get_board_XY(int x, int y, int& out_x, int& out_y);
+  void setXY(int x, int y);
+  void setXY_from_board(int x, int y);
+  void rotate_right(std::vector<std::shared_ptr<Puyo>>& board);
   std::shared_ptr<Puyo> companion;
 
 private:
