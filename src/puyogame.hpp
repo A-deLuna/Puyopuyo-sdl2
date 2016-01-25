@@ -11,11 +11,10 @@ class Input;
 
 class PuyoGame {
 public:
-  PuyoGame();
+  PuyoGame(int x_offset);
   ~PuyoGame();
   void update(Input& input);
   void draw(Graphics& graphics);
-  void draw_background(Graphics& graphics);
   void drop_hanging_peices();
 
 private:
@@ -25,6 +24,7 @@ private:
 private:
   const int BOARD_TILES_X = 6;
   const int BOARD_TILES_Y = 14;
+  int x_offset;
   std::shared_ptr<Puyo> falling_puyo;
   std::vector<std::shared_ptr<Puyo>> board;
   std::vector<Graphics::Color> colors;

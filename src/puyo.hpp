@@ -9,7 +9,7 @@ class Puyo {
 public:
   Puyo(int x, int y, Graphics::Color color);
   Puyo(int x, int y, int w, int h);
-  void draw(Graphics& graphics);
+  void draw(Graphics& graphics, int x_offset);
   void fall(int pixels);
   void move_left();
   void move_right();

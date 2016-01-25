@@ -1,7 +1,7 @@
 #include "game.hpp"
 #include <SDL2/SDL.h>
 
-Game::Game() :graphics(), input(), puyo_game() {
+Game::Game() :graphics(), input(), puyo_game_left(50), puyo_game_right(340) {
   loop();
 }
 
@@ -30,12 +30,20 @@ Game::loop() {
 
 void
 Game::draw() {
-  puyo_game.draw(graphics);
+  draw_background();
+  puyo_game_left.draw(graphics);
+  // puyo_game_right.draw(graphics);
 }
 
 void
 Game::update() {
-  puyo_game.update(input);
+  puyo_game_left.update(input);
+  // puyo_game_right.update(input);
+}
+void
+Game::draw_background() {
+  graphics.color(Graphics::Color::LIGHT_GREY);
+  graphics.clear();
 }
 
 bool

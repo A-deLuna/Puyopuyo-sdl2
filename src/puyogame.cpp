@@ -3,7 +3,7 @@
 #include "input.hpp"
 #include "puyo.hpp"
 
-PuyoGame::PuyoGame() : board(BOARD_TILES_X * BOARD_TILES_Y), gen(rd()), dist(0, 4){
+PuyoGame::PuyoGame(int x_offset) :x_offset(x_offset), board(BOARD_TILES_X * BOARD_TILES_Y), gen(rd()), dist(0, 4){
   colors = {
     Graphics::Color::RED,
     Graphics::Color::GREEN,
@@ -88,8 +88,7 @@ void PuyoGame::set_falling_peice_in_board() {
 
 void
 PuyoGame::draw(Graphics& graphics) {
-  draw_background(graphics);
-  if(falling_puyo) falling_puyo->draw(graphics);
+  if(falling_puyo) falling_puyo->draw(graphics, x_offset);
   draw_board(graphics);
   graphics.flip();
 }
@@ -97,13 +96,8 @@ void
 PuyoGame::draw_board(Graphics& graphics) {
   for(auto puyo: board) {
     if(puyo) {
-      puyo->draw(graphics);
+      puyo->draw(graphics, x_offset);
     }
   }
 }
 
-void
-PuyoGame::draw_background(Graphics& graphics) {
-  graphics.color(Graphics::Color::LIGHT_GREY);
-  graphics.clear();
-}

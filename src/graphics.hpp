@@ -24,7 +24,7 @@ public:
 private:
   SDL_Window* window;
   SDL_Renderer* renderer;
-  const int SCREEN_WIDTH = 240;
+  const int SCREEN_WIDTH = 600; //240
   const int SCREEN_HEIGHT = 560;
 };
 #endif

@@ -15,11 +15,13 @@ private:
   void loop();
   void update();
   void draw();
+  void draw_background();
   bool process_events();
   
 private:
   Graphics graphics;
   Input input;
-  PuyoGame puyo_game;
+  PuyoGame puyo_game_left;
+  PuyoGame puyo_game_right;
 };
 #endif

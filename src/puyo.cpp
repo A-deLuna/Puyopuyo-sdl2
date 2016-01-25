@@ -4,10 +4,10 @@ Puyo::Puyo(int x, int y, Graphics::Color c):
 Puyo::Puyo(int x, int y, int w, int h): x(x), y(y), w(w), h(h) { }
 
 void
-Puyo::draw(Graphics& graphics) {
+Puyo::draw(Graphics& graphics, int x_offset) {
   graphics.color(color);
-  graphics.draw_filled_rect(x, y, h, w);
-  if(companion) companion->draw(graphics);
+  graphics.draw_filled_rect(x + x_offset, y, h, w);
+  if(companion) companion->draw(graphics, x_offset);
 }
 
 void
