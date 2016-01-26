@@ -22,6 +22,9 @@ public:
   void setXY_from_board(int x, int y);
   void rotate_right(std::vector<std::shared_ptr<Puyo>>& board);
   std::shared_ptr<Puyo> companion;
+  bool flag;
+  bool remove_flag;
+  Graphics::Color color;
 
 private:
   const int PUYO_WIDTH = 40;
@@ -30,6 +33,5 @@ private:
   int y;
   int w;
   int h;
-  Graphics::Color color;
 };
 #endif

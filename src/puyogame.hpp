@@ -16,11 +16,16 @@ public:
   void update(Input& input);
   void draw(Graphics& graphics);
   void drop_hanging_peices();
+  
 
 private:
   void set_falling_peice_in_board();
   void draw_board(Graphics& graphics);
   Graphics::Color get_random_color();
+  int dfs_count(int x, int y, Graphics::Color c);
+  void dfs_remove(int x, int y, Graphics::Color c);
+  void remove_completed();
+  std::shared_ptr<Puyo> get_puyo_at(int x, int y);
 private:
   const int BOARD_TILES_X = 6;
   const int BOARD_TILES_Y = 14;

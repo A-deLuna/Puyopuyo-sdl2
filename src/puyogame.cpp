@@ -3,6 +3,7 @@
 #include "input.hpp"
 #include "puyo.hpp"
 
+
 PuyoGame::PuyoGame(int x_offset) :x_offset(x_offset), board(BOARD_TILES_X * BOARD_TILES_Y), gen(rd()), dist(0, 4){
   colors = {
     Graphics::Color::RED,
@@ -54,17 +55,84 @@ PuyoGame::update(Input& input) {
   else {
     set_falling_peice_in_board();
     drop_hanging_peices();
+    remove_completed();
+    drop_hanging_peices();
   }
+}
+
+void PuyoGame::remove_completed() {
+
+  for(auto puyo: board) {
+    if(puyo) puyo->flag = false;
+  }
+
+  for(auto puyo : board) {
+    if(puyo && !puyo->flag) {
+      int x, y;
+      puyo->get_board_XY(x, y);
+      int count = dfs_count(x, y, puyo->color);
+      if(count >= 4) dfs_remove(x, y, puyo->color);
+    }
+  }
+}
+
+void PuyoGame::dfs_remove(int x, int y, Graphics::Color c) {
+  if (x < 0
+      || x >= BOARD_TILES_X
+      || y < 0
+      || y >= BOARD_TILES_Y
+      || get_puyo_at(x,y) == nullptr
+      || get_puyo_at(x, y)->flag == false
+      || get_puyo_at(x, y)->color != c) {
+    return ;
+  }
+
+  int dx[4] = {0, 0, -1, 1};
+  int dy[4] = {1, -1, 0, 0};
+
+  get_puyo_at(x,y)->flag = false;
+
+  for(int i = 0; i < 4; i++) {
+     dfs_remove(x + dx[i], y + dy[i], c);
+  }
+  board[y * BOARD_TILES_X + x] = nullptr;
+}
+int PuyoGame::dfs_count(int x, int y, Graphics::Color c) {
+  if (x < 0
+      || x >= BOARD_TILES_X
+      || y < 0
+      || y >= BOARD_TILES_Y
+      || get_puyo_at(x,y) == nullptr
+      || get_puyo_at(x, y)->flag
+      || get_puyo_at(x, y)->color != c) {
+    return 0;
+  }
+
+  int dx[4] = {0, 0, -1, 1};
+  int dy[4] = {1, -1, 0, 0};
+
+  get_puyo_at(x, y)->flag = true;
+  int ans = 0;
+  for(int i = 0; i < 4; i++) {
+    ans += dfs_count(x + dx[i], y + dy[i], c);
+  }
+
+  return 1 + ans;
+}
+
+std::shared_ptr<Puyo>
+PuyoGame::get_puyo_at(int x, int y) {
+  return board[y * BOARD_TILES_X + x];
 }
 
 void PuyoGame::drop_hanging_peices() {
   for(int i = BOARD_TILES_Y - 2; i >= 0; i--) {
     for(int j = 0; j < BOARD_TILES_X; j++) {
-      std::shared_ptr<Puyo> piece = board[i * BOARD_TILES_X + j];
+      std::shared_ptr<Puyo> piece = get_puyo_at(j, i);
       if(piece) {
         board[i * BOARD_TILES_X + j] = nullptr;
         int y = i;
-        while(y < BOARD_TILES_Y && board[y * BOARD_TILES_X + j] == nullptr) {
+        while(y < BOARD_TILES_Y && get_puyo_at(j, y) == nullptr) {
           y++;
         }
         board[(y-1) * BOARD_TILES_X + j] = piece;
