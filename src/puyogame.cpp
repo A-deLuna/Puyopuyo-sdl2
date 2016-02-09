@@ -4,7 +4,12 @@
 #include "puyo.hpp"
 
 
-PuyoGame::PuyoGame(int x_offset) :x_offset(x_offset), board(BOARD_TILES_X * BOARD_TILES_Y), gen(rd()), dist(0, 4){
+PuyoGame::PuyoGame(int x_offset, Controller controller) : 
+                                  x_offset(x_offset),
+                                  board(BOARD_TILES_X * BOARD_TILES_Y),
+                                  gen(rd()), 
+                                  dist(0, 4), 
+                                  controller(controller){
   colors = {
     Graphics::Color::RED,
     Graphics::Color::GREEN,
@@ -31,23 +36,23 @@ PuyoGame::update(Input& input) {
     falling_puyo = std::make_shared<Puyo>(40, 0, get_random_color());
     falling_puyo->companion = std::make_shared<Puyo>(80, 0, get_random_color());
   }
-  if (input.was_key_pressed(SDL_SCANCODE_DOWN)) {
+  if (controller.was_down_pressed(input)) {
     if(falling_puyo->can_move_to(0 , 5, BOARD_TILES_X, BOARD_TILES_Y, board)) {
       falling_puyo->fall(FALLING_FAST);
     }
   }
-  if (input.was_key_pressed(SDL_SCANCODE_RIGHT)) {
+  if (controller.was_right_pressed(input)) {
     if(falling_puyo->can_move_to(40 , 0, BOARD_TILES_X, BOARD_TILES_Y, board)) {
       falling_puyo->move_right();
     }
   }
-  if (input.was_key_pressed(SDL_SCANCODE_LEFT)) {
+  if (controller.was_left_pressed(input)) {
     if(falling_puyo->can_move_to(-40 , 0, BOARD_TILES_X, BOARD_TILES_Y, board)) {
       falling_puyo->move_left();
     }
   }
-  if (input.was_key_pressed(SDL_SCANCODE_Z)) {
-    falling_puyo->rotate_right(board);
+  if (controller.was_rotate_right_pressed(input)) {
+    falling_puyo->rotate_right(BOARD_TILES_X, BOARD_TILES_Y, board);
   }
   if(falling_puyo->can_move_to(0 , 1, BOARD_TILES_X, BOARD_TILES_Y, board)) {
     falling_puyo->fall(FALLING_PER_FRAME);
@@ -55,13 +60,14 @@ PuyoGame::update(Input& input) {
   else {
     set_falling_peice_in_board();
     drop_hanging_peices();
-    remove_completed();
-    drop_hanging_peices();
+    while(remove_completed())
+      drop_hanging_peices();
   }
 }
 
-void PuyoGame::remove_completed() {
-
+bool
+PuyoGame::remove_completed() {
+  bool removed = false;
   for(auto puyo: board) {
     if(puyo) puyo->flag = false;
   }
@@ -71,12 +77,17 @@ void PuyoGame::remove_completed() {
       int x, y;
       puyo->get_board_XY(x, y);
       int count = dfs_count(x, y, puyo->color);
-      if(count >= 4) dfs_remove(x, y, puyo->color);
+      if(count >= 4) {
+        dfs_remove(x, y, puyo->color);
+        removed = true;
+      }
     }
   }
+  return removed;
 }
 
-void PuyoGame::dfs_remove(int x, int y, Graphics::Color c) {
+void
+PuyoGame::dfs_remove(int x, int y, Graphics::Color c) {
   if (x < 0
       || x >= BOARD_TILES_X
       || y < 0
@@ -125,7 +136,8 @@ PuyoGame::get_puyo_at(int x, int y) {
   return board[y * BOARD_TILES_X + x];
 }
 
-void PuyoGame::drop_hanging_peices() {
+void
+PuyoGame::drop_hanging_peices() {
   for(int i = BOARD_TILES_Y - 2; i >= 0; i--) {
     for(int j = 0; j < BOARD_TILES_X; j++) {
       std::shared_ptr<Puyo> piece = get_puyo_at(j, i);
@@ -142,7 +154,8 @@ void PuyoGame::drop_hanging_peices() {
   }
 }
 
-void PuyoGame::set_falling_peice_in_board() {
+void
+PuyoGame::set_falling_peice_in_board() {
   int x, y;
   falling_puyo->get_board_XY(x, y);
   board[y * BOARD_TILES_X + x] = falling_puyo;
@@ -155,9 +168,24 @@ void PuyoGame::set_falling_peice_in_board() {
 }
 
 void
+PuyoGame::draw_borders(Graphics& graphics) {
+  int height = BOARD_TILES_Y * 40;
+  int width = BOARD_TILES_X * 40;
+  graphics.color(Graphics::Color::BLACK);
+  // bottom line
+  graphics.draw_line(x_offset, height, x_offset + width, height); 
+
+  // left line
+  graphics.draw_line(x_offset, 0, x_offset, height);
+  // right line
+  graphics.draw_line(x_offset + width, 0, x_offset + width, height);
+}
+
+void
 PuyoGame::draw(Graphics& graphics) {
   if(falling_puyo) falling_puyo->draw(graphics, x_offset);
   draw_board(graphics);
+  draw_borders(graphics);
   graphics.flip();
 }
 void

@@ -4,6 +4,7 @@
 #include "graphics.hpp"
 #include "input.hpp"
 #include "puyogame.hpp"
+#include "controller.hpp"
 #include <vector>
 
 class Game {
@@ -21,6 +22,8 @@ private:
 private:
   Graphics graphics;
   Input input;
+  Controller left_controller;
+  Controller right_controller;
   PuyoGame puyo_game_left;
   PuyoGame puyo_game_right;
 };

@@ -40,6 +40,16 @@ Graphics::draw_filled_rect(int x, int y, int h, int w) {
   rect.w = w;
   SDL_RenderFillRect(renderer, &rect);
 }
+void 
+Graphics::draw_rect(int x, int y, int h, int w) {
+  SDL_Rect rect;
+  rect.x = x;
+  rect.y = y;
+  rect.h = h;
+  rect.w = w;
+  SDL_RenderDrawRect(renderer, &rect);
+
+}
 
 void
 Graphics::draw_line(int x1, int y1, int x2, int y2) {

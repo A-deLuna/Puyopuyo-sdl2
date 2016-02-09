@@ -7,6 +7,8 @@ void
 Puyo::draw(Graphics& graphics, int x_offset) {
   graphics.color(color);
   graphics.draw_filled_rect(x + x_offset, y, h, w);
+  graphics.color(Graphics::Color::BLACK);
+  graphics.draw_rect(x + x_offset, y, h, w);
   if(companion) companion->draw(graphics, x_offset);
 }
 
@@ -26,13 +28,15 @@ void Puyo::move_right() {
 
 }
 
-void Puyo::rotate_right(std::vector<std::shared_ptr<Puyo>>& board) {
+void Puyo::rotate_right(int board_x,
+                        int board_y, 
+                        std::vector<std::shared_ptr<Puyo>>& board) {
 
   if(y == companion->y) {
     // FC -> F
     //       C
-    if(x < companion->x) {
-      companion->setXY(x, y + PUYO_HEIGHT);
+    if(x < companion->x ) {
+      if(can_move_to(0, 1, board_x, board_y, board))companion->setXY(x, y + PUYO_HEIGHT);
     }
     // CF -> C
     //       F
@@ -40,15 +44,15 @@ void Puyo::rotate_right(std::vector<std::shared_ptr<Puyo>>& board) {
       companion->setXY(x, y - PUYO_HEIGHT);
     }
   }
-  else if(x == companion->x) {
+  else if(x == companion->x ) {
     // F -> CF
     // C
-    if(y < companion->y) {
-      companion->setXY(x - PUYO_WIDTH, y);
+    if(y < companion->y ) {
+      if(can_move_to(-40, 0, board_x, board_y, board))companion->setXY(x - PUYO_WIDTH, y);
     }
     // C -> FC
     // F
-    else {
+    else if(can_move_to(40, 0, board_x, board_y, board)){
       companion->setXY(x + PUYO_WIDTH, y);
     }
 

@@ -5,13 +5,14 @@
 #include <vector>
 #include <random>
 #include "graphics.hpp"
+#include "controller.hpp"
 
 class Puyo;
 class Input;
 
 class PuyoGame {
 public:
-  PuyoGame(int x_offset);
+  PuyoGame(int x_offset, Controller controller);
   ~PuyoGame();
   void update(Input& input);
   void draw(Graphics& graphics);
@@ -24,8 +25,9 @@ private:
   Graphics::Color get_random_color();
   int dfs_count(int x, int y, Graphics::Color c);
   void dfs_remove(int x, int y, Graphics::Color c);
-  void remove_completed();
+  bool remove_completed();
   std::shared_ptr<Puyo> get_puyo_at(int x, int y);
+  void draw_borders(Graphics& graphics);
 private:
   const int BOARD_TILES_X = 6;
   const int BOARD_TILES_Y = 14;
@@ -36,5 +38,6 @@ private:
   std::random_device rd;
   std::mt19937 gen;
   std::uniform_int_distribution<> dist;
+  Controller controller;
 };
 #endif

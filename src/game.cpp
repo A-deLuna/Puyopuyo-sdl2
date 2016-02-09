@@ -1,7 +1,21 @@
 #include "game.hpp"
 #include <SDL2/SDL.h>
+#include "controller.hpp"
 
-Game::Game() :graphics(), input(), puyo_game_left(50), puyo_game_right(340) {
+Game::Game() : left_controller(SDL_SCANCODE_W,
+                             SDL_SCANCODE_S,
+                             SDL_SCANCODE_A,
+                             SDL_SCANCODE_D,
+                             SDL_SCANCODE_T,
+                             SDL_SCANCODE_Y), 
+               right_controller(SDL_SCANCODE_UP,
+                             SDL_SCANCODE_DOWN,
+                             SDL_SCANCODE_LEFT,
+                             SDL_SCANCODE_RIGHT,
+                             SDL_SCANCODE_O,
+                             SDL_SCANCODE_P), 
+                puyo_game_left(50, left_controller),
+                puyo_game_right(500, right_controller) {
   loop();
 }
 
@@ -32,13 +46,13 @@ void
 Game::draw() {
   draw_background();
   puyo_game_left.draw(graphics);
-  // puyo_game_right.draw(graphics);
+  puyo_game_right.draw(graphics);
 }
 
 void
 Game::update() {
   puyo_game_left.update(input);
-  // puyo_game_right.update(input);
+  puyo_game_right.update(input);
 }
 void
 Game::draw_background() {
